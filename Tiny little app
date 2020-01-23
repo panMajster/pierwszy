@@ -1,0 +1,193 @@
+	// I created this app to "automate boring stuff". Feel free do edit and make it better
+
+	// TODO - add countdown timer
+
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileSystemView;
+
+import java.awt.BorderLayout;
+import java.awt.event.*;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.ss.util.CellAddress;
+
+
+public class GUI {
+	private JFrame ramka;
+	private JPanel panelGlowny;
+	private JPanel panelStoper;
+	private JTextField pole5card;
+	private JTextField pole4card;
+	private JButton dodajHanda;
+	private JButton dodajHanda5c;
+	private JButton odpalPlik;
+	private JTextField info;
+	
+	private String sciezkaDoPliku;
+		
+	private JFileChooser wybierzPlik;
+	
+	private static Workbook wb;
+	private static Sheet sh;
+	private static FileInputStream fis;
+	private static FileOutputStream fos;
+	private static Row row;
+	private static Cell cell;
+	
+	public static void main (String[] args ) {
+		GUI app = new GUI();
+		app.doDziela();
+	}
+	
+	public void doDziela() {
+		ramka = new JFrame();
+		panelGlowny = new JPanel();
+		panelStoper = new JPanel();
+		
+		pole5card = new JTextField(10);
+		pole4card = new JTextField(10);
+		
+		info = new JTextField(20);
+		
+		JLabel label5c = new JLabel ("5card");
+		JLabel label4c = new JLabel ("4card");
+		
+		dodajHanda = new JButton ("Dodaj 4c");
+		dodajHanda.addActionListener(new DodajHandaListener() );
+		
+		dodajHanda5c = new JButton ("Dodaj 5c");
+		dodajHanda5c.addActionListener(new DodajHanda5cListener() );
+				
+		wybierzPlik = new JFileChooser();
+		odpalPlik = new JButton ("Sciezka do pliku");
+		//odpalPlik.addActionListener(new OdpalPlikListener() );
+		sciezkaDoPliku = new String();
+		
+		if (wybierzPlik.showOpenDialog(odpalPlik) == JFileChooser.APPROVE_OPTION) {
+			sciezkaDoPliku = wybierzPlik.getSelectedFile().getAbsolutePath();
+			info.setText(sciezkaDoPliku);
+		}
+				
+		System.out.println(sciezkaDoPliku);
+		
+		panelGlowny.add(label4c);
+		panelGlowny.add(pole4card);
+		panelGlowny.add(dodajHanda);
+		panelGlowny.add(label5c);
+		panelGlowny.add(pole5card);
+		panelGlowny.add(dodajHanda5c);
+		panelGlowny.add(odpalPlik);
+		
+		
+		panelGlowny.add(odpalPlik);
+		panelGlowny.add(info);
+		
+		ramka.getContentPane().add(panelGlowny);
+		ramka.getContentPane().add(BorderLayout.SOUTH, panelStoper);
+		
+		ramka.setSize(625,200);
+		ramka.setVisible(true);
+			
+	}//koniec doDziela
+	
+
+	class DodajHanda5cListener implements ActionListener {
+		public void actionPerformed (ActionEvent zd) {
+			try {
+				fis = new FileInputStream(sciezkaDoPliku);
+				wb = WorkbookFactory.create(fis);
+				sh = wb.getSheet("plo5c");
+				int rows = sh.getLastRowNum();
+				int dobreRows = rows + 1;
+										
+				int colID = 1;
+					
+				row = sh.createRow(dobreRows);
+				cell = row.createCell(colID);
+				cell.setCellValue(pole5card.getText()); 
+				
+				
+								
+				
+				fos = new FileOutputStream(sciezkaDoPliku);
+				wb.write(fos);
+				
+				fos.close();
+				
+				info.setText("Done");
+		
+			}catch(Exception ex) {
+				info.setText("Error");
+			}
+		}
+	}
+	
+	
+	
+	
+	class DodajHandaListener implements ActionListener {
+		public void actionPerformed (ActionEvent zd) {
+			try {
+				fis = new FileInputStream(sciezkaDoPliku);
+				wb = WorkbookFactory.create(fis);
+				sh = wb.getSheet("plo4c");
+				int rows = sh.getLastRowNum();
+				int dobreRows = rows + 1;
+										
+				int colID = 1;
+					
+				row = sh.createRow(dobreRows);
+				cell = row.createCell(colID);
+				cell.setCellValue(pole4card.getText()); 
+				
+				
+								
+				
+				fos = new FileOutputStream(sciezkaDoPliku);
+				wb.write(fos);
+				
+				fos.close();
+				
+				info.setText("Done");
+		
+			}catch(Exception ex) {
+				info.setText("Nie wyszlo");
+			
+			
+			}
+				
+				
+			
+			
+		
+	}
+}
+
+	
+
+	
+
+
+}
+	
+	
+
+	
+ 
+
