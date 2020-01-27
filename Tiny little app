@@ -1,10 +1,15 @@
 	// I created this app to "automate boring stuff". Feel free do edit and make it better
+	//
 
-	// TODO - add countdown timer
+	// TODO - ADD Sound player dla stopera
+	// TODO - ADDfiltr dla file chooser tylko do plikow xlsx
+	// TODO - FIX countdown timer STOP button
+	
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.JFileChooser;
+import java.io.File;
+
 import javax.swing.filechooser.FileSystemView;
 
 import java.awt.BorderLayout;
@@ -28,7 +33,25 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.util.CellAddress;
 
 
+import java.awt.event.*;
+import java.util.TimerTask;
+import java.util.Timer;
+
+
 public class GUI {
+	// zmienne stopera
+	
+	JButton start;
+	JButton stop;
+	JLabel display;
+	JLabel msg;
+	JTextField sekundy;
+	JTextField minuty;
+	JPanel stoper;
+    
+    //// zmienne wrzucacza
+	
+		
 	private JFrame ramka;
 	private JPanel panelGlowny;
 	private JPanel panelStoper;
@@ -40,8 +63,10 @@ public class GUI {
 	private JTextField info;
 	
 	private String sciezkaDoPliku;
-		
+	
+	
 	private JFileChooser wybierzPlik;
+
 	
 	private static Workbook wb;
 	private static Sheet sh;
@@ -53,13 +78,23 @@ public class GUI {
 	public static void main (String[] args ) {
 		GUI app = new GUI();
 		app.doDziela();
+		
+		
+		
 	}
 	
 	public void doDziela() {
+		
+		
+		
+		/////////////////////// PANEL GLOWNY + RAMKA
+		
 		ramka = new JFrame();
 		panelGlowny = new JPanel();
 		panelStoper = new JPanel();
 		
+				
+					
 		pole5card = new JTextField(10);
 		pole4card = new JTextField(10);
 		
@@ -86,6 +121,40 @@ public class GUI {
 				
 		System.out.println(sciezkaDoPliku);
 		
+		
+		////////////////// PANEL STOPER//////////////////
+		stoper = new JPanel();
+		start = new JButton ("START");
+		stop = new JButton ("STOP");
+		display = new JLabel();
+		display.setText("0");
+		msg = new JLabel("Ustaw czas");
+		sekundy = new JTextField();
+		sekundy.setText("0");
+		minuty = new JTextField();
+		minuty.setText("0");
+		
+		stoper.add(sekundy);
+		stoper.add(minuty);
+		stoper.add(display);
+		
+		stoper.add(start);
+		stoper.add(stop);
+		
+		sekundy.setBounds(45, 60, 30, 30);
+		minuty.setBounds(10, 60, 30, 30);
+		start.setBounds(60,15,100,30);
+		stop.setBounds(160,15, 100, 30);
+		display.setBounds(120, 40, 200, 50);
+		
+		//start.addActionListener(new StartListener() );
+		
+		//stop.addActionListener(new StopListener());
+		
+
+        
+        
+										
 		panelGlowny.add(label4c);
 		panelGlowny.add(pole4card);
 		panelGlowny.add(dodajHanda);
@@ -94,12 +163,13 @@ public class GUI {
 		panelGlowny.add(dodajHanda5c);
 		panelGlowny.add(odpalPlik);
 		
+				
 		
 		panelGlowny.add(odpalPlik);
 		panelGlowny.add(info);
 		
 		ramka.getContentPane().add(panelGlowny);
-		ramka.getContentPane().add(BorderLayout.SOUTH, panelStoper);
+		ramka.getContentPane().add(BorderLayout.SOUTH, stoper);
 		
 		ramka.setSize(625,200);
 		ramka.setVisible(true);
@@ -121,9 +191,6 @@ public class GUI {
 				row = sh.createRow(dobreRows);
 				cell = row.createCell(colID);
 				cell.setCellValue(pole5card.getText()); 
-				
-				
-								
 				
 				fos = new FileOutputStream(sciezkaDoPliku);
 				wb.write(fos);
@@ -156,9 +223,6 @@ public class GUI {
 				cell = row.createCell(colID);
 				cell.setCellValue(pole4card.getText()); 
 				
-				
-								
-				
 				fos = new FileOutputStream(sciezkaDoPliku);
 				wb.write(fos);
 				
@@ -169,7 +233,6 @@ public class GUI {
 			}catch(Exception ex) {
 				info.setText("Nie wyszlo");
 			
-			
 			}
 				
 				
@@ -179,8 +242,41 @@ public class GUI {
 	}
 }
 
-	
+	 public class StartListener implements ActionListener{
+         public void actionPerformed (ActionEvent zd) {
+            
+            String min = minuty.getText();
+            int minCyfra = Integer.parseInt(min);
 
+            String sek = sekundy.getText();
+            int sekCyfra = Integer.parseInt(sek);
+            
+            Stoper2 stoper = new Stoper2();
+            stoper.setMinuty(minCyfra);
+            stoper.setSekundy(sekCyfra);
+            stoper.start();
+                     
+                                       
+            
+                       
+
+         }// koniec actionPerformed
+   
+         
+     }// koniec startListener
+	 
+	 
+	 public class ResetListener implements ActionListener {
+         public void actionPerformed (ActionEvent zd) {            
+             minuty.setText("0");
+             sekundy.setText("0");
+         }
+     
+
+     }// koniec ResetListener
+	 
+	 
+	
 	
 
 
